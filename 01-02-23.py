@@ -31,18 +31,12 @@ def get_input_vector():
     return input_vector
 
 class Tile(pygame.sprite.Sprite):
-    instances = []
-    
     def __init__(self, position, size):
         super().__init__()
         self.instances.append(self)
         self.image = pygame.Surface((size, size))
         self.image.fill('grey')
         self.rect = self.image.get_rect(bottomleft=position)
-    
-    def update(self, shift):
-        self.rect.x -= shift.x
-        self.rect.y -= shift.y
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, position):
@@ -63,45 +57,14 @@ class Player(pygame.sprite.Sprite):
         self.terminal_velocity = TERMINAL_VELOCITY
         self.jump_speed = JUMP_SPEED
     
-    def apply_horizontal_force(self):
-        if self.input_vector.x != 0:
-            self.direction.x += ACCELERATION * self.input_vector.x
-            self.direction.x = max(self.direction.x, -self.max_speed)
-            self.direction.x = min(self.direction.x, self.max_speed)
-        else:
-            self.direction.x = 0
-        
-        self.rect.x += self.direction.x
-    
-    def check_vertical_collisions(self):
-        for tile in Tile.instances:
-            if not tile.rect.colliderect(self): continue
-            if self.direction.y > 0: self.rect.bottom = tile.rect.top
-            elif self.direction.y < 0: self.rect.top = tile.rect.bottom
-            self.direction.y = 0
-    
-    def check_horizontal_collisions(self):
-        for tile in Tile.instances:
-            if not tile.rect.colliderect(self): continue
-            if self.direction.x < 0: self.rect.left = tile.rect.right
-            elif self.direction.x > 0: self.rect.right = tile.rect.left
-            self.direction.x = 0
-    
     def apply_gravity(self):
         self.direction.y += self.gravity
         self.direction.y = min(self.direction.y, self.terminal_velocity)
         self.rect.y += self.direction.y
     
-    def jump(self):
-        self.direction.y = self.jump_speed
-    
     def update(self):
         self.input_vector = get_input_vector()
         self.apply_horizontal_force()
-        self.check_horizontal_collisions()
-        if pygame.key.get_pressed()[pygame.K_SPACE]: self.jump()
-        self.apply_gravity()
-        self.check_vertical_collisions()
 
 class Level:
     def __init__(self, level_data, surface):
