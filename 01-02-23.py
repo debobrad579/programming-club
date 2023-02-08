@@ -33,7 +33,6 @@ def get_input_vector():
 class Tile(pygame.sprite.Sprite):
     def __init__(self, position, size):
         super().__init__()
-        self.instances.append(self)
         self.image = pygame.Surface((size, size))
         self.image.fill('grey')
         self.rect = self.image.get_rect(bottomleft=position)
@@ -64,7 +63,7 @@ class Player(pygame.sprite.Sprite):
     
     def update(self):
         self.input_vector = get_input_vector()
-        self.apply_horizontal_force()
+        self.apply_gravity()
 
 class Level:
     def __init__(self, level_data, surface):
