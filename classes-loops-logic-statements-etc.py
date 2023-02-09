@@ -1,7 +1,7 @@
 import time
 
-# Class_Class
-# ClassClass
+# Class_Class - incorrect
+# ClassClass - correct
 
 # Classes
 class Building:
@@ -23,7 +23,7 @@ def square_numbers(x = 2):
     x ** 2
 print(square_numbers())
 
-# squareNumbers
+# squareNumbers - not in Python
 
 
 building1 = Building((20, 20, 20), "building1")
@@ -107,7 +107,7 @@ while num2:
     print(num2)
     if num2 == 2:
         break
-else:
+else: # <---
     print("Exited")
 
 
@@ -115,7 +115,7 @@ else:
 if (num2) {
     do stuff
     GOTO 65
-} else {
+} else { <--- Same else statement as above
     do other stuff
 }
 """
