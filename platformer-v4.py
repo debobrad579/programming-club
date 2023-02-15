@@ -1,21 +1,32 @@
 # 15-02-23
-import pygame, sys
+import pygame, sys, random
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
 TILE_SIZE = 64
 
+ACCELERATION = 1
+MAX_SPEED = 8
 GRAVITY = 0.8
+JUMP_SPEED = 18
+TERMINAL_VELOCITY = 12
 
 LEVEL_MAP = [
-    "    P             ",
-    "  XXXXXX      E   ",
+    "   P              ",
+    "               E  ",
+    "  XXXXXX          ",
     " XXXXXXXXX   XXXXX",
     "             XXXXX",
     "                  ",
     "  XXX  X E X      ",
     "        XXX    XX ",
     "                  ",
+]
+
+colors = [
+    'red',
+    'blue',
+    'green'
 ]
 
 def get_input_vector():
@@ -27,40 +38,25 @@ def get_input_vector():
 
 
 class Entity(pygame.sprite.Sprite):
-    def __init__(self, **kwargs):
+    def __init__(self, size, position, color, max_speed, acceleration, terminal_velocity):
         super().__init__()
+        self.image = pygame.Surface(size)
+        self.image.fill(color)
+        self.rect = self.image.get_rect(bottomleft=position)
+        self.is_on_floor = True
 
-        for arg in kwargs:
-            setattr(self, arg, kwargs[arg])
-
-        self.image = pygame.Surface(self.size)
-        self.image.fill(self.color)
-        self.rect = self.image.get_rect(bottomleft=self.position)
-
+        self.acceleration = acceleration
+        self.terminal_velocity = terminal_velocity
+        self.max_speed = max_speed
+        self.velocity = pygame.Vector2()
         self.direction = pygame.Vector2()
-        self.velocity = pygame.Vector2(0, 0)
-
-        self.is_on_floor = False
 
     def apply_gravity(self):
         self.velocity.y += GRAVITY
         self.velocity.y = min(self.velocity.y, self.terminal_velocity)
         self.rect.y += self.velocity.y
-    
-    def apply_horizontal_movement(self):
-        if self.direction.x != 0:
-            self.velocity.x += self.acceleration * self.direction.x
-            self.velocity.x = min(self.velocity.x, self.max_speed)
-            self.velocity.x = max(self.velocity.x, -self.max_speed)
-        else:
-            self.velocity.x = 0
 
-        self.rect.x += self.velocity.x
-    
-    def hit_wall(self):
-        pass
-    
-    def check_vertical_tile_collisions(self):
+    def check_vertical_collisions(self):
         for tile in Tile.instances:
             if not self.rect.colliderect(tile.rect):
                 continue
@@ -71,7 +67,10 @@ class Entity(pygame.sprite.Sprite):
                 self.rect.top = tile.rect.bottom
             self.velocity.y = 0
 
-    def check_horizontal_tile_collisions(self):
+    def hit_wall(self):
+        pass
+
+    def check_horizontal_collisions(self):
         for tile in Tile.instances:
             if not self.rect.colliderect(tile.rect):
                 continue
@@ -79,45 +78,49 @@ class Entity(pygame.sprite.Sprite):
                 self.rect.right = tile.rect.left
             elif self.velocity.x < 0:
                 self.rect.left = tile.rect.right
-            
             self.hit_wall()
+
             self.velocity.x = 0
-    
+
+    def apply_horizontal_movement(self):
+        if self.direction.x != 0:
+            self.velocity.x += self.acceleration * self.direction.x
+            self.velocity.x = min(self.velocity.x, self.max_speed)
+            self.velocity.x = max(self.velocity.x, -self.max_speed)
+        else:
+            self.velocity.x = 0
+
+        self.rect.x += self.velocity.x
+
     def update(self):
         self.apply_gravity()
         self.is_on_floor = False
-        self.check_vertical_tile_collisions()
+        self.check_vertical_collisions()
         self.apply_horizontal_movement()
-        self.check_horizontal_tile_collisions()
+        self.check_horizontal_collisions()
 
 
 class Enemy(Entity):
     instances = []
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, size, position):
+        super().__init__(size, position, colors[random.randint(0, len(colors) - 1)], 4, 0.5, 8)
         self.instances.append(self)
-
-
-class WalkingEnemy(Enemy):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
         self.direction.x = 1
-    
+
     def hit_wall(self):
         self.direction.x *= -1
 
 
 class Player(Entity):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, size, position):
+        super().__init__(size, position, 'red', MAX_SPEED, ACCELERATION, TERMINAL_VELOCITY)
 
-        self.jump_speed = 18
-        self.can_jump = False
+        self.jump_speed = JUMP_SPEED
 
     def jump(self):
         self.velocity.y = -self.jump_speed
-    
+
     def check_enemy_collisions(self):
         for enemy in Enemy.instances:
             if self.rect.colliderect(enemy.rect):
@@ -126,10 +129,8 @@ class Player(Entity):
     def update(self):
         super().update()
         self.direction = get_input_vector()
-
-        if pygame.key.get_pressed()[pygame.K_SPACE] and self.is_on_floor:
+        if (pygame.key.get_pressed()[pygame.K_SPACE] or pygame.key.get_pressed()[pygame.K_w]) and self.is_on_floor:
             self.jump()
-
         self.check_enemy_collisions()
 
 
@@ -162,9 +163,9 @@ class Level:
                 if cell == "X":
                     self.tiles.add(Tile((x, y), TILE_SIZE))
                 elif cell == "P":
-                    self.player.add(Player(size=(32, 64), color='red', position=(x, y), terminal_velocity=12, acceleration=1, max_speed=8))
+                    self.player.add(Player((32, 64), (x, y)))
                 elif cell == "E":
-                    self.enemies.add(WalkingEnemy(size=(32, 32), color='blue', position=(x, y), terminal_velocity=12, acceleration=0.5, max_speed=3))
+                    self.enemies.add(Enemy((32, 32), (x, y)))
 
     def update(self):
         self.tiles.draw(self.display_surface)
