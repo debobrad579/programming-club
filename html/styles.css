@@ -1,0 +1,28 @@
+/* 12-04-23 */
+#amazon {
+    text-decoration:
+    none; color: black; font-size: 32px;
+    display: block;
+}
+
+.red {
+    color: red;
+}
+
+th, td, table {
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+body {
+    font-family: Comic Sans MS, Arial, sans-serif;
+    padding: 50px;
+}
+
+h6 {
+    font-size: 32px;
+    font-weight: bold;
+    color: pink;
+    text-align: center;
+    margin: 100px;
+}
