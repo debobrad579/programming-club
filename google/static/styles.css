@@ -1,0 +1,48 @@
+h1 {
+    font-size: 6vw;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 180px;
+    font-size: 20px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+#search-bar {
+    width: 75%;
+    border-radius: 30px;
+    padding-left: 15px;
+}
+
+#google {
+    text-align: center;
+    width: 50%;
+    height: 50%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+}
+
+#G, #g {
+    color: rgb(37, 101, 197);
+}
+
+#o, #e {
+    color: red;
+}
+
+#o2 {
+    color: rgb(216, 181, 24);
+}
+
+#l {
+    color: green;
+}
+
+span {
+    text-shadow: 1px 1px 2px black;
+    margin-left: -0.7vw;
+    margin-right: -0.7vw;
+}
