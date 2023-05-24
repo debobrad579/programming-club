@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <h2 id="advanced-heading">Advanced Search</h2>
+    <div id="advanced-search">
+        <form action="https://google.com/search">
+            <table>
+                <tbody>
+                    <tr>
+                        <td<h2>Find pages with...</h2></td>
+                    </tr>
+                    <tr>
+                        <td class="advanced-td">all these words:</td>
+                        <td><input type="text" name="as_q" class="advanced-search-bar"></td>
+                        <td>Type the important words: tri-colour rat terrier</td>
+                    </tr>
+                    <tr>
+                        <td class="advanced-td">this exact word or phrase:</td>
+                        <td><input type="text" name="as_epq" class="advanced-search-bar"></td>
+                        <td>Put exact words in quotes: "rat terrier"</td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td class="advanced-td">any of these words:</td>
+                        <td><input type="text" name="as_oq" class="advanced-search-bar"></td>
+                        <td>Type OR between all the words you want: miniature OR standard</td>
+                    </tr>
+                    <tr>
+                        <td class="advanced-td">none of these words:</td>
+                        <td><input type="text" name="as_eq" class="advanced-search-bar"></td>
+                        <td>Put a minus sing just before the words that you don't want: -rodent</td>
+                    </tr>
+                    <tr>
+                        <td class="advanced-td"><input type="submit" value="Advanced Search"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock %}
