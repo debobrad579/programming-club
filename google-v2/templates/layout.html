@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <link rel="stylesheet" href="/static/styles2.css">
+</head>
+<body>
+    <table id="container">
+        <tr>
+            <td valign="top">
+                <nav>
+                    <div id="navbar">
+                        <div id="navbar-elements">
+                            <h3>Email</h3>
+                        </div>
+                        <div id="navbar-links">
+                            <ul>
+                                <li><a href="/advanced">Advanced Search</a></li>
+                                <li><a>Link</a></li>
+                                <li><a>Link</a></li>
+                                <li><a>Link</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div id="content">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
